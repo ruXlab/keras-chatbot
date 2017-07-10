@@ -10,7 +10,8 @@ from keras.models import Sequential, model_from_json
 from keras.optimizers import Adagrad
 from keras.layers.core import Dense, Activation, Dropout
 from keras.layers.recurrent import LSTM
-from keras.datasets.data_utils import get_file
+# from keras.datasets.data_utils import get_file
+from keras.utils.data_utils import get_file
 
 from os import path, symlink
 import numpy as np
@@ -30,7 +31,7 @@ args = docopt(__doc__)
     It is recommended to run this script on GPU, as recurrent
     networks are quite computationally intensive.
 
-    If you try this script on new data, make sure your corpus 
+    If you try this script on new data, make sure your corpus
     has at least ~100k characters. ~1M is better.
 '''
 
@@ -89,11 +90,11 @@ except Exception as error:
 #    adagrad = Adagrad(lr=0.01, epsilon=1e-6, clipnorm=1.)
 #    model.compile(loss='binary_crossentropy', optimizer=adagrad)
     model.compile(loss='categorical_crossentropy', optimizer='rmsprop')
-    
+
     fh = open('keras-manos.model.json', 'wb')
     fh.write(model.to_json())
     fh.close()
-    
+
 
 # helper function to sample an index from a probability array
 def sample(a, temperature=1.0):
@@ -110,8 +111,10 @@ for iteration in range(1, 3):
     print()
     print('-' * 50)
     print('Iteration', iteration)
-    model.fit(X, y, batch_size=128, nb_epoch=1)
+    model.fit(X, y, batch_size=128, epochs=1)
 
+
+    print(text)
     start_index = random.randint(0, len(text) - maxlen - 1)
 
     for diversity in [0.2, 0.5, 1.0, 1.2]:
