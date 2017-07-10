@@ -98,9 +98,13 @@ except Exception as error:
 
 # helper function to sample an index from a probability array
 def sample(a, temperature=1.0):
-    a = np.log(a)/temperature
-    a = np.exp(a)/np.sum(np.exp(a))
-    return np.argmax(np.random.multinomial(1,a,1))
+    a = np.log(a) / temperature
+    dist = np.exp(a)/np.sum(np.exp(a))
+    choices = range(len(a))
+    return np.random.choice(choices, p=dist)
+    # a = np.log(a)/temperature
+    # a = np.exp(a)/np.sum(np.exp(a))
+    # return np.argmax(np.random.multinomial(1,a,1))
 
 # Load previous weights
 if path.isfile('keras-manos.weights.latest.h5'):
